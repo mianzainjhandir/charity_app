@@ -10,7 +10,6 @@ class IntroPage1 extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.only(top: 40),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ClipOval(
                 child: Image.asset(
