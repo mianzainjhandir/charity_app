@@ -1,4 +1,3 @@
-
 import 'package:charity_app/views/home/home_screen.dart';
 import 'package:charity_app/views/onboarding/intro_page_1.dart';
 import 'package:charity_app/views/onboarding/intro_page_2.dart';
@@ -16,54 +15,144 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
 
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
+
   bool onLastPage = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children:[
+        children: [
+
+          // ================= PAGE VIEW =================
           PageView(
             controller: _controller,
-          onPageChanged: (index){
-              setState(() {
-                onLastPage = (index == 2);
-              });
-          },
-          children: [
-           IntroPage1(),
-            IntroPage2(),
-            IntroPage3()
-          ],
-        ),
-          Container(
-              alignment: Alignment(0, 0.75),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                      onTap: (){
-                        _controller.jumpToPage(2);
-                      },
-                      child: Text("Skip")),
-                  SmoothPageIndicator(controller: _controller, count: 3),
-                  onLastPage
-                  ? GestureDetector(
-                      onTap: (){
-                        Get.to(HomeScreen());
-                      },
-                      child: Text("Done")):
-                  GestureDetector(
-                      onTap: (){
-                        _controller.nextPage(
-                            duration: Duration(milliseconds: 500), curve: Curves.easeIn);
-                      },
-                      child: Text("Next"))
 
+            onPageChanged: (index) {
+              setState(() {
+                onLastPage = index == 2;
+              });
+            },
+
+            children: const [
+              IntroPage1(),
+              IntroPage2(),
+              IntroPage3(),
+            ],
+          ),
+
+          // ================= BOTTOM SECTION =================
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 25,
+
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                // ================= PAGE INDICATOR =================
+                SmoothPageIndicator(
+                  controller: _controller,
+                  count: 3,
+
+                  effect: WormEffect(
+                    dotHeight: 7,
+                    dotWidth: 7,
+                    spacing: 6,
+
+                    activeDotColor: Colors.deepOrange.shade200,
+                    dotColor: Colors.grey.shade300,
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                // ================= NEXT / GET STARTED BUTTON =================
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 48,
+
+                    child: ElevatedButton(
+                      onPressed: () {
+
+                        // ================= LAST PAGE =================
+                        if (onLastPage) {
+
+                          Get.to(() => const HomeScreen());
+
+                        }
+
+                        // ================= NEXT =================
+                        else {
+
+                          _controller.nextPage(
+                            duration: const Duration(
+                              milliseconds: 500,
+                            ),
+                            curve: Curves.easeIn,
+                          );
+
+                        }
+                      },
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepOrange.shade300,
+                        foregroundColor: Colors.white,
+
+                        elevation: 0,
+
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+
+                      child: Text(
+                        onLastPage ? "Get Started" : "Next",
+
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // ================= SKIP =================
+                if (!onLastPage) ...[
+
+                  const SizedBox(height: 10),
+
+                  GestureDetector(
+                    onTap: () {
+                      _controller.jumpToPage(2);
+                    },
+
+                    child: const Text(
+                      "Skip",
+
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
                 ],
-              ))
-    ]
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
