@@ -24,7 +24,7 @@ class IntroPage3 extends StatelessWidget {
               const SizedBox(height: 30),
 
               const Text(
-                'Make a difference in the \n lives of others.',
+                'Help us change lives, one\n donation at a time.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 26,
