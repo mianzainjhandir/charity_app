@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../log_in/view.dart';
+
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -89,7 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         // ================= LAST PAGE =================
                         if (onLastPage) {
 
-                          Get.to(() => const HomeScreen());
+                          Get.to(() => const LogInPage());
 
                         }
 
