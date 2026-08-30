@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../widgets/custom_button.dart';
+import '../../widgets/social_button.dart';
 import '../../widgets/textfield.dart';
 
 class LogInPage extends StatelessWidget {
@@ -12,7 +14,7 @@ class LogInPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.only(top: 14, left: 14),
+        padding: const EdgeInsets.only(top: 14, left: 14,right: 14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -37,7 +39,47 @@ class LogInPage extends StatelessWidget {
                 keyboardType: TextInputType.emailAddress,
               ),
             ),
+            Gap(10),
+            Text("Password",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16),),
+            Gap(5),
+            Padding(
+              padding: const EdgeInsets.only(right: 5),
+              child: CustomTextField(
+                hintText: "Enter your password",
+                isPassword: true,
+              ),
+            ),
+            Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: (){
+                    print("Hello");
+                  },
+                    child: Text("Forgot password ?"),
+                )
+            ),
+            Gap(20),
 
+            Padding(
+              padding: const EdgeInsets.only(right: 5),
+              child: CustomButton(
+                text: "Log in",
+                onTap: () {
+                  // Login logic yahan ayegi
+                },
+              ),
+            ),
+            Gap(25),
+
+            SocialLoginButtons(
+              onGoogleTap: () {
+                print("Google Login");
+              },
+
+              onFacebookTap: () {
+                print("Facebook Login");
+              },
+            ),
           ],
         ),
       ),
