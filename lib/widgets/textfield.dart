@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatefulWidget {
   final String hintText;
   final String? labelText;
+  final String? helperText;
+  final String? prefixText;
   final bool isPassword;
   final TextInputType keyboardType;
   final TextEditingController? controller;
@@ -11,6 +13,8 @@ class CustomTextField extends StatefulWidget {
     super.key,
     required this.hintText,
     this.labelText,
+    this.helperText,
+    this.prefixText,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
     this.controller,
@@ -73,6 +77,20 @@ class _CustomTextFieldState extends State<CustomTextField> {
               fontSize: 14,
             ),
 
+            prefixIcon: widget.prefixText != null
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 16, top: 14),
+                    child: Text(
+                      widget.prefixText!,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  )
+                : null,
+
             filled: true,
 
             fillColor: Colors.grey.shade50,
@@ -130,9 +148,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
           Padding(
             padding: const EdgeInsets.only(left: 5),
             child: Text(
-              widget.isPassword
-                  ? "Please enter your password"
-                  : "Please enter your email address",
+              widget.helperText ??
+                  (widget.isPassword
+                      ? "Please enter your password"
+                      : "Please enter your email address"),
 
               style: TextStyle(
                 fontSize: 11,

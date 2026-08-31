@@ -52,8 +52,9 @@ class SocialLoginButtons extends StatelessWidget {
 
             // Google
             Expanded(
+
               child: _socialButton(
-                imagePath: "assets/images/google.png",
+                imagePath: "assets/images/google1.png",
                 text: "Google",
                 onTap: onGoogleTap,
               ),
@@ -64,7 +65,7 @@ class SocialLoginButtons extends StatelessWidget {
             // Facebook
             Expanded(
               child: _socialButton(
-                imagePath: "assets/images/facebook.png",
+                imagePath: "assets/images/img.png",
                 text: "Facebook",
                 onTap: onFacebookTap,
               ),
@@ -103,8 +104,8 @@ class SocialLoginButtons extends StatelessWidget {
 
             Image.asset(
               imagePath,
-              height: 26,
-              width: 26,
+              height: 30,
+              width: 30,
               fit: BoxFit.contain,
             ),
 

@@ -1,5 +1,6 @@
 
 import 'package:charity_app/views/home/home_screen.dart';
+import 'package:charity_app/views/sign_up/view.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -105,7 +106,9 @@ class LogInPage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(()=> SignUp());
+                  },
                   child: Text.rich(
                     TextSpan(
                       children: [
