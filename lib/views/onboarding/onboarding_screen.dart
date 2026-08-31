@@ -91,7 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         // ================= LAST PAGE =================
                         if (onLastPage) {
 
-                          Get.to(() => const LogInPage());
+                          Get.to(() =>  LogInPage());
 
                         }
 

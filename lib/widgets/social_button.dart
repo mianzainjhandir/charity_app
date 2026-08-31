@@ -83,7 +83,7 @@ class SocialLoginButtons extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return SizedBox(
-      height: 45,
+      height: 50,
       child: ElevatedButton(
         onPressed: onTap,
 
@@ -103,17 +103,17 @@ class SocialLoginButtons extends StatelessWidget {
 
             Image.asset(
               imagePath,
-              height: 20,
-              width: 20,
+              height: 26,
+              width: 26,
               fit: BoxFit.contain,
             ),
 
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
 
             Text(
               text,
               style: GoogleFonts.poppins(
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
             ),
