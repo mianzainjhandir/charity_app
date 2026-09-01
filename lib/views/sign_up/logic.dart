@@ -1,3 +1,4 @@
+import 'package:charity_app/views/home/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,5 +26,35 @@ class SignupController extends GetxController{
     }
 
     isLoading.value = true; //Start loading....
+
+    try{
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password
+      );
+
+      await userCredential.user!.updateDisplayName(name);
+
+      await _firestore.collection('charity_users').doc(userCredential.user!.uid).set({
+        'name': name,
+        'email': email,
+        'userId': userCredential.user!.uid,
+      });
+
+      Get.snackbar("Success", "Account Created Successfully!", backgroundColor: Colors.green);
+
+      // Clear Fields
+      nameController.clear();
+      emailController.clear();
+      passwordController.clear();
+
+      Get.offAll(HomeScreen());
+    }catch (e) {
+      // Error handling
+      Get.snackbar("Error", e.toString(), backgroundColor: Colors.red);
+    } finally {
+      isLoading.value = false; // Stop loading
+    }
+
   }
 }

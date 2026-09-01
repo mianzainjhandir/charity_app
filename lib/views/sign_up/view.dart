@@ -3,12 +3,14 @@ import 'package:charity_app/views/log_in/view.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../widgets/custom_button.dart';
 import '../../widgets/social_button.dart';
 import '../../widgets/textfield.dart';
+import 'logic.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -18,6 +20,8 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final SignupController controller = Get.put(SignupController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,9 +52,10 @@ class _SignUpState extends State<SignUp> {
                       fontSize: 16),
                 ),
                 const Gap(2),
-                const Padding(
-                  padding: EdgeInsets.only(right: 5),
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
                   child: CustomTextField(
+                    controller: controller.nameController,
                     hintText: "Enter your Name",
                     helperText: "Please enter your name",
                     keyboardType: TextInputType.name,
@@ -65,9 +70,10 @@ class _SignUpState extends State<SignUp> {
                       fontSize: 16),
                 ),
                 const Gap(2),
-                const Padding(
-                  padding: EdgeInsets.only(right: 5),
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
                   child: CustomTextField(
+                    controller: controller.emailController,
                     hintText: "Enter your email",
                     keyboardType: TextInputType.emailAddress,
                   ),
@@ -81,9 +87,10 @@ class _SignUpState extends State<SignUp> {
                       fontSize: 16),
                 ),
                 const Gap(2),
-                const Padding(
-                  padding: EdgeInsets.only(right: 5),
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
                   child: CustomTextField(
+                    controller: controller.phoneController,
                     hintText: "Phone Number",
                     helperText: "Please enter your phone number",
                     prefixText: "+92 ",
@@ -99,9 +106,10 @@ class _SignUpState extends State<SignUp> {
                       fontSize: 16),
                 ),
                 const Gap(5),
-                const Padding(
-                  padding: EdgeInsets.only(right: 5),
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
                   child: CustomTextField(
+                    controller: controller.passwordController,
                     hintText: "Enter your password",
                     isPassword: true,
                   ),
@@ -111,7 +119,9 @@ class _SignUpState extends State<SignUp> {
                   padding: const EdgeInsets.only(right: 5),
                   child: CustomButton(
                     text: "Sign up",
-                    onTap: () {},
+                    onTap: () {
+                      controller.SignUp();
+                    },
                   ),
                 ),
                 const Gap(25),
