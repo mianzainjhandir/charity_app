@@ -1,4 +1,5 @@
 
+import 'package:charity_app/views/home/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/bottom_nevigation_appbar.dart';
@@ -19,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const HomeContent(),
     const Center(child: Text('Favorite Screen Content', style: TextStyle(fontSize: 20))),
     const Center(child: Text('History Screen Content', style: TextStyle(fontSize: 20))),
-    const Center(child: Text('Profile Screen Content', style: TextStyle(fontSize: 20))),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {

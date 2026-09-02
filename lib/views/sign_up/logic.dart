@@ -38,6 +38,7 @@ class SignupController extends GetxController{
       await _firestore.collection('charity_users').doc(userCredential.user!.uid).set({
         'name': name,
         'email': email,
+        'phone': phone,
         'userId': userCredential.user!.uid,
       });
 
