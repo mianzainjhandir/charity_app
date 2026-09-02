@@ -12,11 +12,13 @@ class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Text("Home Screen Content")
-
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text(" Hello,\n Engr Zain👋",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),)
+          ],
+        ),
       ),
     );
   }
