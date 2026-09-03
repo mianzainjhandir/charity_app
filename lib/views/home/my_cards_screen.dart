@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -52,26 +51,22 @@ class MyCardsScreen extends StatelessWidget {
             ),
             const Gap(20),
             _buildCardItem(
-              icon: FontAwesomeIcons.paypal,
-              iconColor: const Color(0xFF003087),
+              imagePath: "assets/images/paypal.png", // Replace with your image path
               title: "Paypal",
               onTap: () {},
             ),
             _buildCardItem(
-              icon: FontAwesomeIcons.ccVisa,
-              iconColor: const Color(0xFF1A1F71),
+              imagePath: "assets/images/visa.png", // Replace with your image path
               title: "Visa",
               onTap: () {},
             ),
             _buildCardItem(
-              icon: FontAwesomeIcons.googlePay,
-              iconColor: Colors.black,
+              imagePath: "assets/images/google1.png", // Replace with your image path
               title: "Google pay",
               onTap: () {},
             ),
             _buildCardItem(
-              icon: FontAwesomeIcons.applePay,
-              iconColor: Colors.black,
+              imagePath: "assets/images/apple.png", // Replace with your image path
               title: "Apple pay",
               onTap: () {},
             ),
@@ -82,8 +77,7 @@ class MyCardsScreen extends StatelessWidget {
   }
 
   Widget _buildCardItem({
-    required IconData icon,
-    required Color iconColor,
+    required String imagePath,
     required String title,
     required VoidCallback onTap,
   }) {
@@ -93,18 +87,22 @@ class MyCardsScreen extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(15),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
           decoration: BoxDecoration(
             color: const Color(0xFFF7F7F7),
             borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
             children: [
-              SizedBox(
+              // Image Code
+              Image.asset(
+                imagePath,
                 width: 40,
-                child: FaIcon(icon, color: iconColor, size: 24),
+                height: 30,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) => const Icon(Icons.credit_card),
               ),
-              const Gap(10),
+              const Gap(15),
               Expanded(
                 child: Text(
                   title,
