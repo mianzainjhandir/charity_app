@@ -3,6 +3,8 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'add_card_screen.dart';
+
 class MyCardsScreen extends StatelessWidget {
   const MyCardsScreen({super.key});
 
@@ -30,7 +32,7 @@ class MyCardsScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add, color: Colors.black, size: 28),
             onPressed: () {
-              // Add card action
+              Get.to(() => const AddCardScreen());
             },
           ),
         ],
