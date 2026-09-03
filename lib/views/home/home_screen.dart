@@ -1,5 +1,5 @@
 
-import 'package:charity_app/views/home/profile_screen.dart';
+import 'package:charity_app/views/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/bottom_nevigation_appbar.dart';
