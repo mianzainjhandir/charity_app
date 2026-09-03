@@ -6,8 +6,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../log_in/view.dart';
 
+import 'my_cards_screen.dart';
 import 'my_profile_screen.dart';
 import 'notification_screen.dart';
+import 'privacy_policy_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -88,7 +90,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _buildMenuItem(
                 icon: Icons.credit_card_outlined,
                 title: "My cards",
-                onTap: () {},
+                onTap: () {
+                  Get.to(() => const MyCardsScreen());
+                },
               ),
               _buildMenuItem(
                 icon: Icons.notifications_none_rounded,
@@ -100,7 +104,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _buildMenuItem(
                 icon: Icons.shield_outlined,
                 title: "Privacy policy",
-                onTap: () {},
+                onTap: () {
+                  Get.to(() => const PrivacyPolicyScreen());
+                },
               ),
               _buildMenuItem(
                 icon: Icons.logout_rounded,
