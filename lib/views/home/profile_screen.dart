@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../log_in/view.dart';
 
 import 'my_profile_screen.dart';
+import 'notification_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -92,7 +93,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _buildMenuItem(
                 icon: Icons.notifications_none_rounded,
                 title: "Notifications",
-                onTap: () {},
+                onTap: () {
+                  Get.to(() => const NotificationScreen());
+                },
               ),
               _buildMenuItem(
                 icon: Icons.shield_outlined,
