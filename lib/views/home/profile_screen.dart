@@ -109,6 +109,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
               ),
               _buildMenuItem(
+                icon: Icons.help_outline_rounded,
+                title: "Help & Support",
+                onTap: () {
+                  _showHelpSupport();
+                },
+              ),
+              _buildMenuItem(
+                icon: Icons.delete_outline_rounded,
+                title: "Delete Account",
+                titleColor: Colors.red,
+                onTap: () {
+                  _showDeleteAccountDialog();
+                },
+              ),
+              _buildMenuItem(
                 icon: Icons.logout_rounded,
                 title: "Logout",
                 onTap: () {
@@ -127,6 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
+    Color titleColor = Colors.black,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -141,7 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           child: Row(
             children: [
-              Icon(icon, color: Colors.black, size: 24),
+              Icon(icon, color: titleColor == Colors.red ? Colors.red : Colors.black, size: 24),
               const Gap(15),
               Expanded(
                 child: Text(
@@ -149,18 +165,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                    color: titleColor,
                   ),
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
-                color: Colors.black,
+                color: titleColor == Colors.red ? Colors.red.withOpacity(0.5) : Colors.black,
                 size: 26,
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showHelpSupport() {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Help & Support",
+              style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const Gap(20),
+            ListTile(
+              leading: const Icon(Icons.email_outlined, color: Color(0xFFE87554)),
+              title: const Text("Email Us"),
+              subtitle: const Text("support@charityapp.com"),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.phone_outlined, color: Color(0xFFE87554)),
+              title: const Text("Call Us"),
+              subtitle: const Text("+92 300 1234567"),
+              onTap: () {},
+            ),
+            const Gap(20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteAccountDialog() {
+    Get.dialog(
+      AlertDialog(
+        title: Text("Delete Account", style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: Colors.red)),
+        content: Text("Are you sure you want to delete your account? This action cannot be undone.", style: GoogleFonts.poppins()),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text("Cancel", style: GoogleFonts.poppins(color: Colors.grey)),
+          ),
+          TextButton(
+            onPressed: () {
+              // Delete logic
+              Get.back();
+              Get.snackbar("Account Deleted", "Your account has been removed.", backgroundColor: Colors.red, colorText: Colors.white);
+            },
+            child: Text("Delete", style: GoogleFonts.poppins(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }
