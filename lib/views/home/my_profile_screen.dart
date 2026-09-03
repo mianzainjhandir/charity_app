@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'edit_profile_screen.dart';
+
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
 
@@ -22,7 +24,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   XFile? _pickedFile;
   final picker = ImagePicker();
 
-  // Controllers
+  // Controllers (Now used as read-only or to hold data)
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -65,35 +67,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   }
 
   Future<void> _pickImage() async {
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      setState(() {
-        _pickedFile = image;
-      });
-    }
+    // Navigate to Edit screen instead of picking here, or just keep it simple
+    _navigateToEdit();
   }
 
-  Future<void> _updateProfile() async {
-    setState(() => isLoading = true);
-    try {
-      await _firestore.collection('charity_users').doc(currentUser!.uid).update({
-        'name': nameController.text,
-        'phone': phoneController.text,
-      });
-      
-      await currentUser!.updateDisplayName(nameController.text);
-      
-      Get.snackbar("Success", "Profile updated successfully",
-          backgroundColor: Colors.green, colorText: Colors.white);
-      Get.back();
-    } catch (e) {
-      Get.snackbar("Error", "Failed to update profile",
-          backgroundColor: Colors.red, colorText: Colors.white);
-    } finally {
-      if (mounted) {
-        setState(() => isLoading = false);
-      }
+  void _navigateToEdit() async {
+    final result = await Get.to(() => EditProfileScreen(
+          currentName: nameController.text,
+          currentEmail: emailController.text,
+          currentPhone: phoneController.text,
+        ));
+
+    if (result == true) {
+      _fetchUserData(); // Refresh data
     }
   }
 
@@ -105,7 +91,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
           onPressed: () => Get.back(),
         ),
         centerTitle: true,
@@ -120,7 +106,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined, color: Colors.black),
-            onPressed: _updateProfile,
+            onPressed: _navigateToEdit,
           ),
         ],
       ),
@@ -132,13 +118,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 child: Column(
                   children: [
                     const Gap(20),
-                    // Profile Image with Camera Icon
+                    // Profile Image
                     Center(
                       child: Stack(
                         children: [
                           Container(
-                            width: 120,
-                            height: 120,
+                            width: 100,
+                            height: 100,
                             decoration: BoxDecoration(
                               color: Colors.grey.shade200,
                               shape: BoxShape.circle,
@@ -155,7 +141,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             child: _pickedFile == null
                                 ? Icon(
                                     Icons.person,
-                                    size: 80,
+                                    size: 60,
                                     color: Colors.grey.shade400,
                                   )
                                 : null,
@@ -164,9 +150,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             bottom: 0,
                             right: 0,
                             child: GestureDetector(
-                              onTap: _pickImage,
+                              onTap: _navigateToEdit,
                               child: Container(
-                                padding: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(6),
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
                                   shape: BoxShape.circle,
@@ -180,7 +166,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 ),
                                 child: const Icon(
                                   Icons.camera_alt_outlined,
-                                  size: 20,
+                                  size: 18,
                                   color: Colors.black,
                                 ),
                               ),
@@ -190,7 +176,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                     ),
                     const Gap(40),
-                    // Input Fields
+                    // Input Fields (Display Only)
                     _buildInfoField(
                       label: "Name",
                       controller: nameController,
@@ -199,7 +185,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     _buildInfoField(
                       label: "Email address",
                       controller: emailController,
-                      enabled: false, // Email usually not editable here
                     ),
                     const Gap(20),
                     _buildInfoField(
@@ -216,7 +201,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget _buildInfoField({
     required String label,
     required TextEditingController controller,
-    bool enabled = true,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,21 +216,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           ),
         ),
         Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           decoration: BoxDecoration(
             color: const Color(0xFFF7F7F7),
             borderRadius: BorderRadius.circular(15),
           ),
-          child: TextField(
-            controller: controller,
-            enabled: enabled,
+          child: Text(
+            controller.text.isEmpty ? "Not provided" : controller.text,
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: enabled ? Colors.black : Colors.grey,
-            ),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              color: Colors.black,
             ),
           ),
         ),
