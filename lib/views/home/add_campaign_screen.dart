@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'dart:io' show File;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -26,6 +29,8 @@ class _AddCampaignScreenState extends State<AddCampaignScreen> {
   final List<XFile?> smallImages = List.generate(4, (index) => null);
   final ImagePicker picker = ImagePicker();
 
+  bool isLoading = false;
+
   final List<String> categories = [
     "Education",
     "Paramedic",
@@ -37,7 +42,7 @@ class _AddCampaignScreenState extends State<AddCampaignScreen> {
   ];
 
   Future<void> _pickImage(int index) async {
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
     if (image != null) {
       setState(() {
         if (index == -1) {
@@ -46,6 +51,52 @@ class _AddCampaignScreenState extends State<AddCampaignScreen> {
           smallImages[index] = image;
         }
       });
+    }
+  }
+
+  Future<void> _saveCampaign() async {
+    if (titleController.text.isEmpty || 
+        selectedCategory == null || 
+        amountController.text.isEmpty || 
+        dateController.text.isEmpty || 
+        coverImage == null) {
+      Get.snackbar("Error", "Please fill all fields and add a cover image",
+          backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      // Convert Image to Base64 String (Alternative to Firebase Storage)
+      final bytes = await coverImage!.readAsBytes();
+      String base64Image = base64Encode(bytes);
+
+      // Save Data to Firestore
+      final user = FirebaseAuth.instance.currentUser;
+      final campaignId = DateTime.now().millisecondsSinceEpoch.toString();
+
+      await FirebaseFirestore.instance.collection('campaigns').doc(campaignId).set({
+        'id': campaignId,
+        'title': titleController.text.trim(),
+        'category': selectedCategory,
+        'targetAmount': double.parse(amountController.text.trim()),
+        'raisedAmount': 0.0,
+        'expirationDate': dateController.text,
+        'description': descriptionController.text.trim(),
+        'coverImage': base64Image,
+        'creatorId': user?.uid ?? 'anonymous',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      Get.snackbar("Success", "Campaign published successfully!",
+          backgroundColor: Colors.green, colorText: Colors.white);
+      Get.back();
+    } catch (e) {
+      Get.snackbar("Error", e.toString(),
+          backgroundColor: Colors.red, colorText: Colors.white);
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 
@@ -96,100 +147,98 @@ class _AddCampaignScreenState extends State<AddCampaignScreen> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Gap(10),
-                  // Cover Image Placeholder
-                  GestureDetector(
-                    onTap: () => _pickImage(-1),
-                    child: Container(
-                      width: double.infinity,
-                      height: 160,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF7F7F7),
-                        borderRadius: BorderRadius.circular(15),
-                        image: coverImage != null
-                            ? DecorationImage(
-                                image: kIsWeb
-                                    ? NetworkImage(coverImage!.path)
-                                    : FileImage(File(coverImage!.path))
-                                        as ImageProvider,
-                                fit: BoxFit.cover,
-                              )
-                            : null,
-                      ),
-                      child: coverImage == null
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.image_outlined, size: 40, color: Colors.grey),
-                                const Gap(10),
-                                Text(
-                                  "Add cover image",
-                                  style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            )
-                          : null,
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFFE87554)))
+          : Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Gap(10),
+                        // Cover Image Placeholder
+                        GestureDetector(
+                          onTap: () => _pickImage(-1),
+                          child: Container(
+                            width: double.infinity,
+                            height: 160,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF7F7F7),
+                              borderRadius: BorderRadius.circular(15),
+                              image: coverImage != null
+                                  ? DecorationImage(
+                                      image: kIsWeb
+                                          ? NetworkImage(coverImage!.path)
+                                          : FileImage(File(coverImage!.path))
+                                              as ImageProvider,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
+                            ),
+                            child: coverImage == null
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.image_outlined, size: 40, color: Colors.grey),
+                                      const Gap(10),
+                                      Text(
+                                        "Add cover image",
+                                        style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                  )
+                                : null,
+                          ),
+                        ),
+                        const Gap(15),
+                        // Small Image Placeholders
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(4, (index) => _buildSmallImagePlaceholder(index)),
+                        ),
+                        const Gap(25),
+                        Text(
+                          "Funding details",
+                          style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w700),
+                        ),
+                        const Gap(15),
+
+                        _buildLabel("Title"),
+                        _buildTextField(titleController, "Enter your title here"),
+
+                        const Gap(15),
+                        _buildLabel("Category"),
+                        _buildCategoryDropdown(),
+
+                        const Gap(15),
+                        _buildLabel("Total donation required"),
+                        _buildTextField(amountController, "Enter donation amount", 
+                            keyboardType: TextInputType.number, suffix: const Text("\$ ", style: TextStyle(fontWeight: FontWeight.bold))),
+
+                        const Gap(15),
+                        _buildLabel("Expiration date"),
+                        _buildDateField(),
+
+                        const Gap(15),
+                        _buildLabel("Description"),
+                        _buildTextField(descriptionController, "Write your description", maxLines: 4),
+                        
+                        const Gap(30),
+                      ],
                     ),
                   ),
-                  const Gap(15),
-                  // Small Image Placeholders
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(4, (index) => _buildSmallImagePlaceholder(index)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: CustomButton(
+                    text: "Save",
+                    onTap: _saveCampaign,
                   ),
-                  const Gap(25),
-                  Text(
-                    "Funding details",
-                    style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w700),
-                  ),
-                  const Gap(15),
-
-                  _buildLabel("Title"),
-                  _buildTextField(titleController, "Enter your title here"),
-
-                  const Gap(15),
-                  _buildLabel("Category"),
-                  _buildCategoryDropdown(),
-
-                  const Gap(15),
-                  _buildLabel("Total donation required"),
-                  _buildTextField(amountController, "Enter donation amount", 
-                      keyboardType: TextInputType.number, suffix: const Text("\$ ", style: TextStyle(fontWeight: FontWeight.bold))),
-
-                  const Gap(15),
-                  _buildLabel("Expiration date"),
-                  _buildDateField(),
-
-                  const Gap(15),
-                  _buildLabel("Description"),
-                  _buildTextField(descriptionController, "Write your description", maxLines: 4),
-                  
-                  const Gap(30),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: CustomButton(
-              text: "Save",
-              onTap: () {
-                Get.back();
-                Get.snackbar("Success", "Campaign added successfully!",
-                    backgroundColor: Colors.green, colorText: Colors.white);
-              },
-            ),
-          ),
-        ],
-      ),
     );
   }
 
