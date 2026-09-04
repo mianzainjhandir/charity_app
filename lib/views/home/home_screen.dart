@@ -1,8 +1,10 @@
 
 import 'package:charity_app/views/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../widgets/bottom_nevigation_appbar.dart';
+import 'add_campaign_screen.dart';
 import 'home_content.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -37,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // Center Floating Action Button (+)
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Yahan '+' button ka action likhein
+          Get.to(() => const AddCampaignScreen());
         },
         backgroundColor: const Color(0xFFE87554),
         elevation: 4.0,
