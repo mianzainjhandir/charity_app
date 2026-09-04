@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import '../../widgets/categories_widget.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
@@ -14,7 +16,7 @@ class _HomeContentState extends State<HomeContent> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: Text(
+        title: const Text(
           "Hello,\nEngineer Zain 👋",
           style: TextStyle(
             fontSize: 18,
@@ -27,7 +29,7 @@ class _HomeContentState extends State<HomeContent> {
             onPressed: () {
               // Notification screen open karni ho to yahan code likhein
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.notifications_none,
               color: Colors.grey,
               size: 28,
@@ -35,19 +37,29 @@ class _HomeContentState extends State<HomeContent> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 14,right: 14,top: 8),
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              width: double.infinity,
-              height: 200, // 👈 height yahan se adjust karein
-              child: Image.asset(
-                'assets/images/banner.png',
-                fit: BoxFit.cover,
+            Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 180,
+                  child: Image.asset(
+                    'assets/images/banner.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
+            
+            const Gap(10),
+            
+            const CategoriesWidget(),
 
+            const Gap(20),
           ],
         ),
       ),
