@@ -1,3 +1,4 @@
+import 'package:charity_app/views/home/home_screen.dart';
 import 'package:charity_app/views/onboarding/onboarding_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,11 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Charity App',
       debugShowCheckedModeBanner: false,
-      home: OnboardingScreen(),
+      home: const OnboardingScreen(),
+      getPages: [
+        GetPage(name: '/', page: () => const OnboardingScreen()),
+        GetPage(name: '/home', page: () => const HomeScreen()),
+      ],
     );
   }
 }

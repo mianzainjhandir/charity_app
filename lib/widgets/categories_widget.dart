@@ -1,5 +1,7 @@
+import 'package:charity_app/views/home/category_campaigns_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CategoriesWidget extends StatelessWidget {
@@ -7,6 +9,7 @@ class CategoriesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ... categories list stays same ...
     final List<Map<String, dynamic>> categories = [
       {
         "title": "Education",
@@ -72,31 +75,36 @@ class CategoriesWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Row(
             children: categories.map((cat) {
-              return Container(
-                width: 85,
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                decoration: BoxDecoration(
-                  color: cat['color'],
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      cat['icon'],
-                      color: cat['iconColor'],
-                      size: 28,
-                    ),
-                    const Gap(8),
-                    Text(
-                      cat['title'],
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
+              return GestureDetector(
+                onTap: () {
+                  Get.to(() => CategoryCampaignsScreen(categoryName: cat['title']));
+                },
+                child: Container(
+                  width: 85,
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  decoration: BoxDecoration(
+                    color: cat['color'],
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(
+                        cat['icon'],
+                        color: cat['iconColor'],
+                        size: 28,
                       ),
-                    ),
-                  ],
+                      const Gap(8),
+                      Text(
+                        cat['title'],
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }).toList(),

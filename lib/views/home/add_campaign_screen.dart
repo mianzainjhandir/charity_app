@@ -91,7 +91,9 @@ class _AddCampaignScreenState extends State<AddCampaignScreen> {
 
       Get.snackbar("Success", "Campaign published successfully!",
           backgroundColor: Colors.green, colorText: Colors.white);
-      Get.back();
+      
+      // Fixed navigation error for Web
+      Get.offAllNamed('/home');
     } catch (e) {
       Get.snackbar("Error", e.toString(),
           backgroundColor: Colors.red, colorText: Colors.white);
