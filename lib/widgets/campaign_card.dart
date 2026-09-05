@@ -7,6 +7,8 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../modle/campaign_model.dart';
 
+import '../views/home/campaign_details_screen.dart';
+
 class CampaignCard extends StatelessWidget {
   final CampaignModel campaign;
   const CampaignCard({super.key, required this.campaign});
@@ -38,30 +40,34 @@ class CampaignCard extends StatelessWidget {
     double progress = campaign.raisedAmount / campaign.targetAmount;
     if (progress > 1.0) progress = 1.0;
 
-    return Container(
-      width: 250,
-      margin: const EdgeInsets.only(right: 15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image Section
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                child: _buildImage(campaign.coverImage),
-              ),
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => CampaignDetailsScreen(campaign: campaign));
+      },
+      child: Container(
+        width: 250,
+        margin: const EdgeInsets.only(right: 15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image Section
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  child: _buildImage(campaign.coverImage),
+                ),
               Positioned(
                 top: 10,
                 left: 10,
