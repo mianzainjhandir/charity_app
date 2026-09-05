@@ -1,4 +1,5 @@
 
+import 'package:charity_app/views/home/favorite_screen.dart';
 import 'package:charity_app/views/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Alag alag tabs ke mukhtalif screens ya contents
   final List<Widget> _screens = [
     const HomeContent(),
-    const Center(child: Text('Favorite Screen Content', style: TextStyle(fontSize: 20))),
+    const FavoriteScreen(),
     const Center(child: Text('History Screen Content', style: TextStyle(fontSize: 20))),
     const ProfileScreen(),
   ];

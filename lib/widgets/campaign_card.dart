@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,8 +11,30 @@ class CampaignCard extends StatelessWidget {
   final CampaignModel campaign;
   const CampaignCard({super.key, required this.campaign});
 
+  Future<void> _toggleFavorite() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final favRef = FirebaseFirestore.instance
+        .collection('favorites')
+        .doc("${user.uid}_${campaign.id}");
+
+    final doc = await favRef.get();
+
+    if (doc.exists) {
+      await favRef.delete();
+    } else {
+      await favRef.set({
+        'userId': user.uid,
+        'campaignId': campaign.id,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     double progress = campaign.raisedAmount / campaign.targetAmount;
     if (progress > 1.0) progress = 1.0;
 
@@ -56,13 +80,28 @@ class CampaignCard extends StatelessWidget {
               Positioned(
                 top: 10,
                 right: 10,
-                child: Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
+                child: GestureDetector(
+                  onTap: _toggleFavorite,
+                  child: StreamBuilder<DocumentSnapshot>(
+                    stream: user == null 
+                        ? const Stream.empty() 
+                        : FirebaseFirestore.instance.collection('favorites').doc("${user.uid}_${campaign.id}").snapshots(),
+                    builder: (context, snapshot) {
+                      bool isFav = snapshot.hasData && snapshot.data!.exists;
+                      return Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isFav ? Icons.favorite : Icons.favorite_border,
+                          size: 18,
+                          color: isFav ? Colors.red : Colors.grey,
+                        ),
+                      );
+                    }
                   ),
-                  child: const Icon(Icons.favorite_border, size: 18, color: Colors.grey),
                 ),
               ),
             ],
