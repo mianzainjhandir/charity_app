@@ -35,7 +35,6 @@ class CategoryCampaignsScreen extends StatelessWidget {
         stream: FirebaseFirestore.instance
             .collection('campaigns')
             .where('category', isEqualTo: categoryName)
-            .orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
