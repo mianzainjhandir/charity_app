@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../modle/campaign_model.dart';
-
 import '../views/home/campaign_details_screen.dart';
 
 class CampaignCard extends StatelessWidget {
@@ -68,117 +68,120 @@ class CampaignCard extends StatelessWidget {
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                   child: _buildImage(campaign.coverImage),
                 ),
-              Positioned(
-                top: 10,
-                left: 10,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE87554).withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Text(
-                    "Most Popular",
-                    style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: GestureDetector(
-                  onTap: _toggleFavorite,
-                  child: StreamBuilder<DocumentSnapshot>(
-                    stream: user == null 
-                        ? const Stream.empty() 
-                        : FirebaseFirestore.instance.collection('favorites').doc("${user.uid}_${campaign.id}").snapshots(),
-                    builder: (context, snapshot) {
-                      bool isFav = snapshot.hasData && snapshot.data!.exists;
-                      return Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          isFav ? Icons.favorite : Icons.favorite_border,
-                          size: 18,
-                          color: isFav ? Colors.red : Colors.grey,
-                        ),
-                      );
-                    }
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  campaign.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
-                const Gap(8),
-                Text(
-                  "\$${campaign.raisedAmount.toInt()} fund raised from \$${campaign.targetAmount.toInt()}",
-                  style: GoogleFonts.poppins(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                const Gap(10),
-                // Progress Bar
-                Stack(
-                  children: [
-                    Container(
-                      height: 6,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE87554).withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    FractionallySizedBox(
-                      widthFactor: progress,
-                      child: Container(
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE87554),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
+                    child: const Text(
+                      "Most Popular",
+                      style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                     ),
-                  ],
+                  ),
                 ),
-                const Gap(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "3,488 donators",
-                      style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey),
-                    ),
-                    Text(
-                      campaign.expirationDate,
-                      style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: GestureDetector(
+                    onTap: _toggleFavorite,
+                    child: StreamBuilder<DocumentSnapshot>(
+                        stream: user == null
+                            ? const Stream.empty()
+                            : FirebaseFirestore.instance
+                                .collection('favorites')
+                                .doc("${user.uid}_${campaign.id}")
+                                .snapshots(),
+                        builder: (context, snapshot) {
+                          bool isFav = snapshot.hasData && snapshot.data!.exists;
+                          return Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              size: 18,
+                              color: isFav ? Colors.red : Colors.grey,
+                            ),
+                          );
+                        }),
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    campaign.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const Gap(8),
+                  Text(
+                    "\$${campaign.raisedAmount.toInt()} fund raised from \$${campaign.targetAmount.toInt()}",
+                    style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                  const Gap(10),
+                  // Progress Bar
+                  Stack(
+                    children: [
+                      Container(
+                        height: 6,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      FractionallySizedBox(
+                        widthFactor: progress,
+                        child: Container(
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE87554),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Gap(10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "3,488 donators",
+                        style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey),
+                      ),
+                      Text(
+                        campaign.expirationDate,
+                        style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
