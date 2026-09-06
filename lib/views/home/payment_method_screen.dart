@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../utils/pdf_helper.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   final double amount;
@@ -194,6 +195,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     );
   }
 
+  String? lastDonationId;
+
   Future<void> _processPayment() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -210,6 +213,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
 
       // 2. Add Donation Record for History
       final donationId = DateTime.now().millisecondsSinceEpoch.toString();
+      lastDonationId = donationId;
+      
       final donationRef = FirebaseFirestore.instance.collection('donations').doc(donationId);
       batch.set(donationRef, {
         'id': donationId,
@@ -233,6 +238,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   }
 
   void _showSuccessDialog() {
+    final user = FirebaseAuth.instance.currentUser;
     Get.dialog(
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -253,7 +259,30 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(color: Colors.grey.shade600),
             ),
-            const Gap(20),
+            const Gap(25),
+            // Download Receipt Button
+            SizedBox(
+              width: double.infinity,
+              height: 45,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  PdfHelper.generateDonationReceipt(
+                    userName: user?.displayName ?? "Donor",
+                    campaignTitle: widget.campaignTitle,
+                    amount: widget.amount,
+                    paymentMethod: selectedMethod,
+                    donationId: lastDonationId ?? "N/A",
+                  );
+                },
+                icon: const Icon(Icons.download_outlined, color: Color(0xFFE87554)),
+                label: Text("Download Receipt", style: GoogleFonts.poppins(color: const Color(0xFFE87554), fontWeight: FontWeight.w600)),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFFE87554)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+            ),
+            const Gap(12),
             SizedBox(
               width: double.infinity,
               height: 45,
