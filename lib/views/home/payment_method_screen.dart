@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -5,7 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   final double amount;
-  const PaymentMethodScreen({super.key, required this.amount});
+  final String campaignId;
+  const PaymentMethodScreen({super.key, required this.amount, required this.campaignId});
 
   @override
   State<PaymentMethodScreen> createState() => _PaymentMethodScreenState();
@@ -13,6 +15,7 @@ class PaymentMethodScreen extends StatefulWidget {
 
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   String selectedMethod = "Paypal";
+  bool isProcessing = false;
 
   final List<Map<String, String>> paymentMethods = [
     {"name": "Paypal", "image": "assets/images/paypal.png"},
@@ -148,22 +151,30 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     width: 150,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {
-                        _showSuccessDialog();
-                      },
+                      onPressed: isProcessing 
+                        ? null 
+                        : () async {
+                            await _processPayment();
+                          },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFE87554),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(
-                        "Pay now",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      child: isProcessing
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          )
+                        : Text(
+                            "Pay now",
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                     ),
                   ),
                 ],
@@ -174,6 +185,26 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _processPayment() async {
+    setState(() => isProcessing = true);
+    try {
+      // Update Raised Amount in Firestore
+      await FirebaseFirestore.instance
+          .collection('campaigns')
+          .doc(widget.campaignId)
+          .update({
+        'raisedAmount': FieldValue.increment(widget.amount),
+      });
+
+      _showSuccessDialog();
+    } catch (e) {
+      Get.snackbar("Error", "Payment failed: $e",
+          backgroundColor: Colors.red, colorText: Colors.white);
+    } finally {
+      setState(() => isProcessing = false);
+    }
   }
 
   void _showSuccessDialog() {

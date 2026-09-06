@@ -130,7 +130,10 @@ class _DonateAmountScreenState extends State<DonateAmountScreen> {
               child: CustomButton(
                 text: "Continue to payment",
                 onTap: () {
-                  Get.to(() => PaymentMethodScreen(amount: selectedAmount));
+                  Get.to(() => PaymentMethodScreen(
+                        amount: selectedAmount,
+                        campaignId: widget.campaign.id,
+                      ));
                 },
               ),
             ),
