@@ -1,5 +1,6 @@
 
 import 'package:charity_app/views/home/favorite_screen.dart';
+import 'package:charity_app/views/home/history_screen.dart';
 import 'package:charity_app/views/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const HomeContent(),
     const FavoriteScreen(),
-    const Center(child: Text('History Screen Content', style: TextStyle(fontSize: 20))),
+    const HistoryScreen(),
     const ProfileScreen(),
   ];
 

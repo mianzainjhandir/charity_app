@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -7,7 +8,13 @@ import 'package:google_fonts/google_fonts.dart';
 class PaymentMethodScreen extends StatefulWidget {
   final double amount;
   final String campaignId;
-  const PaymentMethodScreen({super.key, required this.amount, required this.campaignId});
+  final String campaignTitle;
+  const PaymentMethodScreen({
+    super.key,
+    required this.amount,
+    required this.campaignId,
+    required this.campaignTitle,
+  });
 
   @override
   State<PaymentMethodScreen> createState() => _PaymentMethodScreenState();
@@ -188,15 +195,33 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   }
 
   Future<void> _processPayment() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
     setState(() => isProcessing = true);
     try {
-      // Update Raised Amount in Firestore
-      await FirebaseFirestore.instance
-          .collection('campaigns')
-          .doc(widget.campaignId)
-          .update({
+      final batch = FirebaseFirestore.instance.batch();
+
+      // 1. Update Raised Amount in Campaign
+      final campaignRef = FirebaseFirestore.instance.collection('campaigns').doc(widget.campaignId);
+      batch.update(campaignRef, {
         'raisedAmount': FieldValue.increment(widget.amount),
       });
+
+      // 2. Add Donation Record for History
+      final donationId = DateTime.now().millisecondsSinceEpoch.toString();
+      final donationRef = FirebaseFirestore.instance.collection('donations').doc(donationId);
+      batch.set(donationRef, {
+        'id': donationId,
+        'campaignId': widget.campaignId,
+        'campaignTitle': widget.campaignTitle,
+        'userId': user.uid,
+        'amount': widget.amount,
+        'timestamp': FieldValue.serverTimestamp(),
+        'paymentMethod': selectedMethod,
+      });
+
+      await batch.commit();
 
       _showSuccessDialog();
     } catch (e) {

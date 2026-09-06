@@ -133,6 +133,7 @@ class _DonateAmountScreenState extends State<DonateAmountScreen> {
                   Get.to(() => PaymentMethodScreen(
                         amount: selectedAmount,
                         campaignId: widget.campaign.id,
+                        campaignTitle: widget.campaign.title,
                       ));
                 },
               ),
