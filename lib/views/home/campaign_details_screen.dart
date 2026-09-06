@@ -9,6 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../modle/campaign_model.dart';
 import '../../widgets/custom_button.dart';
 
+import 'donate_amount_screen.dart';
+
 class CampaignDetailsScreen extends StatelessWidget {
   final CampaignModel campaign;
   const CampaignDetailsScreen({super.key, required this.campaign});
@@ -216,8 +218,7 @@ class CampaignDetailsScreen extends StatelessWidget {
             child: CustomButton(
               text: "Donate now",
               onTap: () {
-                Get.snackbar("Thank You!", "Donation processing feature coming soon.",
-                    backgroundColor: Colors.orange, colorText: Colors.white);
+                Get.to(() => DonateAmountScreen(campaign: campaign));
               },
             ),
           ),
