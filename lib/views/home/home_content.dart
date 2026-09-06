@@ -1,7 +1,9 @@
 
+import 'package:charity_app/views/home/popular_campaigns_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../modle/campaign_model.dart';
 import '../../widgets/campaign_card.dart';
@@ -82,12 +84,17 @@ class _HomeContentState extends State<HomeContent> {
                       color: Colors.black,
                     ),
                   ),
-                  Text(
-                    "View all",
-                    style: GoogleFonts.poppins(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey,
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => const PopularCampaignsScreen());
+                    },
+                    child: Text(
+                      "View all",
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey,
+                      ),
                     ),
                   ),
                 ],
@@ -95,11 +102,11 @@ class _HomeContentState extends State<HomeContent> {
             ),
             const Gap(15),
 
-            // Real-time Campaigns from Firestore
+            // Real-time Campaigns from Firestore (Limited to 2)
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('campaigns')
-                  .orderBy('createdAt', descending: true)
+                  .limit(2) // 👈 Sirf 2 show honge
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -119,7 +126,7 @@ class _HomeContentState extends State<HomeContent> {
                 }
 
                 return SizedBox(
-                  height: 310, // Adjusted height for CampaignCard
+                  height: 310, 
                   child: ListView.builder(
                     padding: const EdgeInsets.only(left: 20),
                     scrollDirection: Axis.horizontal,
