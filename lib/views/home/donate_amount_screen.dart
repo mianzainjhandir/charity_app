@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/custom_button.dart';
 import '../../modle/campaign_model.dart';
 
+import 'payment_method_screen.dart';
+
 class DonateAmountScreen extends StatefulWidget {
   final CampaignModel campaign;
   const DonateAmountScreen({super.key, required this.campaign});
@@ -128,9 +130,7 @@ class _DonateAmountScreenState extends State<DonateAmountScreen> {
               child: CustomButton(
                 text: "Continue to payment",
                 onTap: () {
-                  // Next step logic
-                  Get.snackbar("Payment", "Next step: Choose payment method",
-                      backgroundColor: Colors.orange, colorText: Colors.white);
+                  Get.to(() => PaymentMethodScreen(amount: selectedAmount));
                 },
               ),
             ),
