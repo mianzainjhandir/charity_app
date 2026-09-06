@@ -34,9 +34,12 @@ class HistoryScreen extends StatelessWidget {
               stream: FirebaseFirestore.instance
                   .collection('donations')
                   .where('userId', isEqualTo: user.uid)
-                  .orderBy('timestamp', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                }
+
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator(color: Color(0xFFE87554)));
                 }
@@ -57,11 +60,20 @@ class HistoryScreen extends StatelessWidget {
                   );
                 }
 
+                // Sort locally to avoid needing a Firestore composite index
+                var docs = snapshot.data!.docs;
+                docs.sort((a, b) {
+                  var aTime = (a.data() as Map<String, dynamic>)['timestamp'] as Timestamp?;
+                  var bTime = (b.data() as Map<String, dynamic>)['timestamp'] as Timestamp?;
+                  if (aTime == null || bTime == null) return 0;
+                  return bTime.compareTo(aTime); // Latest first
+                });
+
                 return ListView.builder(
                   padding: const EdgeInsets.all(20),
-                  itemCount: snapshot.data!.docs.length,
+                  itemCount: docs.length,
                   itemBuilder: (context, index) {
-                    var doc = snapshot.data!.docs[index];
+                    var doc = docs[index];
                     var donation = DonationModel.fromJson(doc.data() as Map<String, dynamic>);
                     
                     return _buildHistoryItem(donation);
