@@ -10,6 +10,7 @@ import '../../modle/campaign_model.dart';
 import '../../widgets/custom_button.dart';
 
 import 'donate_amount_screen.dart';
+import 'volunteer_registration_screen.dart';
 
 class CampaignDetailsScreen extends StatelessWidget {
   final CampaignModel campaign;
@@ -212,14 +213,37 @@ class CampaignDetailsScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Donate Now Button
+          // Action Buttons
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: CustomButton(
-              text: "Donate now",
-              onTap: () {
-                Get.to(() => DonateAmountScreen(campaign: campaign));
-              },
+            child: Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Get.to(() => VolunteerRegistrationScreen(campaign: campaign));
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Color(0xFFE87554)),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: Text(
+                      "Volunteer Now",
+                      style: GoogleFonts.poppins(color: const Color(0xFFE87554), fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                const Gap(15),
+                Expanded(
+                  child: CustomButton(
+                    text: "Donate now",
+                    onTap: () {
+                      Get.to(() => DonateAmountScreen(campaign: campaign));
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ],

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../log_in/view.dart';
 
+import 'manage_volunteers_screen.dart';
 import 'my_cards_screen.dart';
 import 'my_profile_screen.dart';
 import 'notification_screen.dart';
@@ -99,6 +100,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: "Notifications",
                 onTap: () {
                   Get.to(() => const NotificationScreen());
+                },
+              ),
+              _buildMenuItem(
+                icon: Icons.assignment_ind_outlined,
+                title: "Manage Volunteers",
+                onTap: () {
+                  Get.to(() => const ManageVolunteersScreen());
                 },
               ),
               _buildMenuItem(
