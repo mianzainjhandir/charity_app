@@ -41,3 +41,4 @@ class MyApp extends StatelessWidget {
 // Added some more campaigns
 // I have complete this charity app.
 // now my next step is to test this app on my android phone and in the evening i will come back again..
+// trying to resolve issues for run on mobile but still facing issues.
