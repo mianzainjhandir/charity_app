@@ -1,5 +1,6 @@
 
 import 'package:charity_app/views/home/popular_campaigns_screen.dart';
+import 'package:charity_app/views/home/search_campaigns_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -50,6 +51,34 @@ class _HomeContentState extends State<HomeContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Search Bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10),
+              child: GestureDetector(
+                onTap: () {
+                  Get.to(() => const SearchCampaignsScreen());
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF7F7F7),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.search, color: Colors.grey),
+                      const Gap(10),
+                      Text(
+                        "Search campaigns...",
+                        style: GoogleFonts.poppins(color: Colors.grey, fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
             // Banner
             Padding(
               padding: const EdgeInsets.all(14.0),
