@@ -9,7 +9,7 @@ import '../log_in/view.dart';
 import 'manage_volunteers_screen.dart';
 import 'my_cards_screen.dart';
 import 'my_profile_screen.dart';
-import 'my_campaigns_screen.dart';
+import 'organizer_dashboard_screen.dart';
 import 'notification_screen.dart';
 import 'privacy_policy_screen.dart';
 
@@ -104,10 +104,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
               ),
               _buildMenuItem(
-                icon: Icons.campaign_outlined,
-                title: "My Campaigns",
+                icon: Icons.dashboard_customize_outlined,
+                title: "Organizer Dashboard",
                 onTap: () {
-                  Get.to(() => const MyCampaignsScreen());
+                  Get.to(() => const OrganizerDashboardScreen());
                 },
               ),
               _buildMenuItem(

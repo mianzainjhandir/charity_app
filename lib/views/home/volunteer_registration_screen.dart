@@ -47,6 +47,7 @@ class _VolunteerRegistrationScreenState extends State<VolunteerRegistrationScree
         'id': volunteerId,
         'campaignId': widget.campaign.id,
         'campaignTitle': widget.campaign.title,
+        'campaignCreatorId': widget.campaign.creatorId,
         'userId': user.uid,
         'userName': user.displayName ?? "Anonymous",
         'userEmail': user.email ?? "",

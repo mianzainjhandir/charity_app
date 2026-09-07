@@ -33,9 +33,10 @@ class ManageVolunteersScreen extends StatelessWidget {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        // In a real app, you would filter by campaigns created by the user.
-        // For simplicity, showing all volunteer requests.
-        stream: FirebaseFirestore.instance.collection('volunteers').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('volunteers')
+            .where('campaignCreatorId', isEqualTo: user?.uid ?? '')
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator(color: Color(0xFFE87554)));
