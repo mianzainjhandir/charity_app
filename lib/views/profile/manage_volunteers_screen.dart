@@ -136,7 +136,7 @@ class ManageVolunteersScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => _updateStatus(docId, 'approved'),
+                    onPressed: () => _updateStatus(vol, docId, 'approved'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -147,7 +147,7 @@ class ManageVolunteersScreen extends StatelessWidget {
                 const Gap(10),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => _updateStatus(docId, 'rejected'),
+                    onPressed: () => _updateStatus(vol, docId, 'rejected'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -162,8 +162,27 @@ class ManageVolunteersScreen extends StatelessWidget {
     );
   }
 
-  void _updateStatus(String docId, String newStatus) async {
-    await FirebaseFirestore.instance.collection('volunteers').doc(docId).update({'status': newStatus});
+  void _updateStatus(VolunteerModel vol, String docId, String newStatus) async {
+    final batch = FirebaseFirestore.instance.batch();
+    
+    // Update volunteer status
+    final volRef = FirebaseFirestore.instance.collection('volunteers').doc(docId);
+    batch.update(volRef, {'status': newStatus});
+
+    // Send notification to the volunteer
+    final notificationId = DateTime.now().millisecondsSinceEpoch.toString();
+    final notifRef = FirebaseFirestore.instance.collection('notifications').doc(notificationId);
+    batch.set(notifRef, {
+      'id': notificationId,
+      'title': 'Volunteer Application $newStatus',
+      'description': 'Your application to volunteer for "${vol.campaignTitle}" has been $newStatus.',
+      'userId': vol.userId,
+      'type': 'volunteer',
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    await batch.commit();
+
     Get.snackbar("Updated", "Volunteer request $newStatus",
         backgroundColor: newStatus == 'approved' ? Colors.green : Colors.red,
         colorText: Colors.white);

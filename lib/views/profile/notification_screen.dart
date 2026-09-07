@@ -1,41 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import '../../modle/notification_model.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Dummy Data
-    final List<Map<String, String>> notifications = [
-      {
-        "title": "Double your donation",
-        "description": "For a limited time, we are doubling all donations up to 10,000.",
-        "time": "30 seconds ago"
-      },
-      {
-        "title": "Donate now and get a free gift",
-        "description": "Donate 50 or more now and receive a free gift, such as a t-shirt, water bottle, or hat.",
-        "time": "50 Minutes ago"
-      },
-      {
-        "title": "Volunteer your time",
-        "description": "Your time is just as valuable as your money. Consider volunteering.",
-        "time": "2 hour ago"
-      },
-      {
-        "title": "Executive Director",
-        "description": "Donate 100 or more and receive a personalized thank-you note",
-        "time": "12 hour ago"
-      },
-      {
-        "title": "Estate plan",
-        "description": "Leave a legacy by including our charity in your will give.",
-        "time": "a few seconds ago"
-      },
-    ];
+    final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -56,26 +33,61 @@ class NotificationScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          final item = notifications[index];
-          return _buildNotificationCard(
-            title: item['title']!,
-            description: item['description']!,
-            time: item['time']!,
-          );
-        },
-      ),
+      body: user == null
+          ? const Center(child: Text("Please login to see notifications"))
+          : StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('notifications')
+                  .where('userId', isEqualTo: user.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator(color: Color(0xFFE87554)));
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.notifications_off_outlined, size: 80, color: Colors.grey),
+                        const Gap(10),
+                        Text(
+                          "No notifications yet",
+                          style: GoogleFonts.poppins(color: Colors.grey, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                // Sort locally by timestamp descending
+                var docs = snapshot.data!.docs;
+                docs.sort((a, b) {
+                  var aTime = (a.data() as Map<String, dynamic>)['timestamp'] as Timestamp?;
+                  var bTime = (b.data() as Map<String, dynamic>)['timestamp'] as Timestamp?;
+                  if (aTime == null || bTime == null) return 0;
+                  return bTime.compareTo(aTime);
+                });
+
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  itemCount: docs.length,
+                  itemBuilder: (context, index) {
+                    var doc = docs[index];
+                    var notification = NotificationModel.fromJson(doc.data() as Map<String, dynamic>);
+                    
+                    return _buildNotificationCard(notification);
+                  },
+                );
+              },
+            ),
     );
   }
 
-  Widget _buildNotificationCard({
-    required String title,
-    required String description,
-    required String time,
-  }) {
+  Widget _buildNotificationCard(NotificationModel notification) {
+    String timeAgo = DateFormat('dd MMM, hh:mm a').format(notification.timestamp);
+    
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(15),
@@ -86,16 +98,20 @@ class NotificationScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Bell Icon Container
+          // Icon Container
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.notifications_none_outlined,
-              color: Color(0xFFE87554),
+            child: Icon(
+              notification.type == 'donation' 
+                  ? Icons.volunteer_activism_outlined 
+                  : notification.type == 'volunteer' 
+                      ? Icons.person_add_outlined 
+                      : Icons.notifications_none_outlined,
+              color: const Color(0xFFE87554),
               size: 24,
             ),
           ),
@@ -106,7 +122,7 @@ class NotificationScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  notification.title,
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -115,7 +131,7 @@ class NotificationScreen extends StatelessWidget {
                 ),
                 const Gap(5),
                 Text(
-                  description,
+                  notification.description,
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     color: Colors.grey.shade600,
@@ -124,7 +140,7 @@ class NotificationScreen extends StatelessWidget {
                 ),
                 const Gap(10),
                 Text(
-                  time,
+                  timeAgo,
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,

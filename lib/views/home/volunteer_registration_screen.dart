@@ -56,6 +56,17 @@ class _VolunteerRegistrationScreenState extends State<VolunteerRegistrationScree
         'appliedAt': FieldValue.serverTimestamp(),
       });
 
+      // Add Notification for Campaign Creator
+      final notificationId = DateTime.now().millisecondsSinceEpoch.toString();
+      await FirebaseFirestore.instance.collection('notifications').doc(notificationId).set({
+        'id': notificationId,
+        'title': 'New Volunteer Application',
+        'description': '${user.displayName ?? "Someone"} applied to volunteer for your campaign: ${widget.campaign.title}',
+        'userId': widget.campaign.creatorId,
+        'type': 'volunteer',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
       Get.snackbar("Success", "Your application has been sent!",
           backgroundColor: Colors.green, colorText: Colors.white);
       Get.back();

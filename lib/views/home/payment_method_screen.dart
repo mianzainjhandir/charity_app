@@ -226,6 +226,18 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         'paymentMethod': selectedMethod,
       });
 
+      // 3. Add Notification for User
+      final notificationId = DateTime.now().millisecondsSinceEpoch.toString() + "_notif";
+      final notificationRef = FirebaseFirestore.instance.collection('notifications').doc(notificationId);
+      batch.set(notificationRef, {
+        'id': notificationId,
+        'title': 'Donation Successful!',
+        'description': 'Thank you for donating \$${widget.amount.toInt()} to ${widget.campaignTitle}.',
+        'userId': user.uid,
+        'type': 'donation',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
       await batch.commit();
 
       _showSuccessDialog();
