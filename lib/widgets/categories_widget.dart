@@ -1,4 +1,4 @@
-import 'package:charity_app/views/home/category_campaigns_screen.dart';
+import 'package:charity_app/views/home/campaigns/category_campaigns_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';

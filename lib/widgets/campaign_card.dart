@@ -7,7 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../modle/campaign_model.dart';
-import '../views/home/campaign_details_screen.dart';
+import '../views/home/campaigns/campaign_details_screen.dart';
 
 class CampaignCard extends StatelessWidget {
   final CampaignModel campaign;

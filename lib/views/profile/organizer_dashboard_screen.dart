@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../modle/campaign_model.dart';
 import '../../widgets/campaign_card.dart';
-import '../home/add_campaign_screen.dart';
+import '../home/campaigns/add_campaign_screen.dart';
 import 'manage_volunteers_screen.dart';
 
 class OrganizerDashboardScreen extends StatelessWidget {

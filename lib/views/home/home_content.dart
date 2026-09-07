@@ -1,6 +1,6 @@
 
-import 'package:charity_app/views/home/popular_campaigns_screen.dart';
-import 'package:charity_app/views/home/search_campaigns_screen.dart';
+import 'package:charity_app/views/home/campaigns/popular_campaigns_screen.dart';
+import 'package:charity_app/views/home/campaigns/search_campaigns_screen.dart';
 import 'package:charity_app/views/profile/notification_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

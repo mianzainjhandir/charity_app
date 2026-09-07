@@ -1,12 +1,12 @@
 
-import 'package:charity_app/views/home/favorite_screen.dart';
-import 'package:charity_app/views/home/history_screen.dart';
+import 'package:charity_app/views/home/tabs/favorite_screen.dart';
+import 'package:charity_app/views/home/tabs/history_screen.dart';
 import 'package:charity_app/views/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../widgets/bottom_nevigation_appbar.dart';
-import 'add_campaign_screen.dart';
+import 'campaigns/add_campaign_screen.dart';
 import 'home_content.dart';
 
 class HomeScreen extends StatefulWidget {
