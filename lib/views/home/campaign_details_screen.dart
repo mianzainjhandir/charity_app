@@ -199,9 +199,18 @@ class CampaignDetailsScreen extends StatelessWidget {
                               "Organize by",
                               style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
                             ),
-                            Text(
-                              "Helps organization trust",
-                              style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
+                            FutureBuilder<DocumentSnapshot>(
+                              future: FirebaseFirestore.instance.collection('charity_users').doc(campaign.creatorId).get(),
+                              builder: (context, snapshot) {
+                                String organizerName = "Helps organization trust";
+                                if (snapshot.hasData && snapshot.data!.exists) {
+                                  organizerName = (snapshot.data!.data() as Map<String, dynamic>)['name'] ?? "Organizer";
+                                }
+                                return Text(
+                                  organizerName,
+                                  style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
+                                );
+                              }
                             ),
                           ],
                         ),
