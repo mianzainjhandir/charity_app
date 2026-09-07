@@ -68,11 +68,7 @@ class CategoryCampaignsScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 20),
                 child: Stack(
                   children: [
-                    // We reuse the CampaignCard but make it full width here
-                    SizedBox(
-                      width: double.infinity,
-                      child: CampaignCard(campaign: campaign),
-                    ),
+                    CampaignCard(campaign: campaign, width: double.infinity),
                     // Delete Button (Only visible here)
                     Positioned(
                       top: 10,

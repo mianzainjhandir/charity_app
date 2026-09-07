@@ -11,7 +11,8 @@ import '../views/home/campaign_details_screen.dart';
 
 class CampaignCard extends StatelessWidget {
   final CampaignModel campaign;
-  const CampaignCard({super.key, required this.campaign});
+  final double? width;
+  const CampaignCard({super.key, required this.campaign, this.width = 250});
 
   Future<void> _toggleFavorite() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -45,8 +46,8 @@ class CampaignCard extends StatelessWidget {
         Get.to(() => CampaignDetailsScreen(campaign: campaign));
       },
       child: Container(
-        width: 250,
-        margin: const EdgeInsets.only(right: 15),
+        width: width,
+        margin: width == null ? EdgeInsets.zero : const EdgeInsets.only(right: 15),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
