@@ -8,6 +8,8 @@ class LoginController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  // I have completely build this app butt still stuck because it cant be working on android.
+
   Future<bool> logIn() async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
